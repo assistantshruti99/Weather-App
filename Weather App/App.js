@@ -1,6 +1,6 @@
 const apikey = "c352787e65867c83d587fe6cf829d6d0"; // OpenWeatherMap API Key
 
-
+// Selecting elements from the DOM
 let input = document.querySelector("#cityname");
 let submitButton = document.querySelector("#button");
 let weatherbody = document.querySelector(".weather-body");
@@ -14,13 +14,15 @@ let winddata = document.querySelector("#wind");
 
 async function getWeatherData(city) {
   try {
-    
+    // Fetch weather data from API
     const response = await fetch(
       `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apikey}&units=metric`
     );
     const weatherData = await response.json();
 
-    console.log("API Response:", weatherData); 
+    console.log("API Response:", weatherData); // Debugging log
+
+    // Check if the API returns a valid city
     if (weatherData.cod !== 200) {
       location_not_found.classList.remove("hide3");
       weatherbody.classList.add("hide1");
@@ -28,14 +30,18 @@ async function getWeatherData(city) {
       return;
     }
 
-   
+    // Hide error message if city is found
     location_not_found.classList.add("hide3");
+
+    // Extract weather details from API response
     const temperature = Math.round(weatherData.main.temp);
     const feels_like = Math.round(weatherData.main.feels_like);
     const humidity = weatherData.main.humidity;
     const wind = weatherData.wind.speed;
     const description = weatherData.weather[0].description;
-    const iconCode = weatherData.weather[0].icon; 
+    const iconCode = weatherData.weather[0].icon; // Example: "01d", "01n"
+
+    // Local weather icons mapping
     const weatherIcons = {
       "01d": "image/clear.png", // Clear sky (day)
       "01n": "image/night-mode.png", // Clear sky (night)
@@ -57,12 +63,12 @@ async function getWeatherData(city) {
       "50n": "image/mist.png",
     };
 
-   
+    // Set weather icon (Use local icons if available, otherwise fallback to OpenWeatherMap icons)
     imageContainer.src =
       weatherIcons[iconCode] ||
       `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
 
-    
+    // Update UI elements
     weatherbody.classList.remove("hide1");
     detailContainer.classList.remove("hide2");
 
@@ -76,7 +82,7 @@ async function getWeatherData(city) {
   }
 }
 
-
+// Function to handle form submission
 function handleWeatherRequest(event) {
   event.preventDefault();
   let city = input.value.trim();
@@ -87,5 +93,5 @@ function handleWeatherRequest(event) {
   }
 }
 
-
+// Attach event listener to the button
 submitButton.addEventListener("click", handleWeatherRequest);
